@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:mvc="http://www.springframework.org/schema/mvc"
+        xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+                http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+        <!-- 启用spring mvc 注解，这个可以不配置。Spring在context:component-scan已经默认了 -->
+        <!-- <context:annotation-config /> -->
+		
+        <!-- 扫描action包，应用Spring的注解 -->
+        <context:component-scan base-package="com.tclpay.tpf.web,com.tclpay.demo.web" />
+
+        <!-- 指定内容协商管理器的bean 
+        <mvc:annotation-driven
+                content-negotiation-manager="contentNegotiationManager">
+        </mvc:annotation-driven>-->
+
+		<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">        
+        <property name="interceptors">
+            <list>  
+                <ref bean="authorityInterceptor"/>   <!-- 权限拦截器 -->
+            </list>        
+        </property>        
+    	</bean>  
+    	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>  
+    	<bean id="authorityInterceptor" class="com.tclpay.tpf.security.AuthorityInterceptor">
+    		<property name="mode" value="dev" />
+    	</bean>
+        <!-- 以下配置SpringMVC的拦截器-->
+        <!-- 这样静态资源就可以访问了 -->
+        <mvc:default-servlet-handler />
+
+        <!-- Spring MVC的视图配置 -->
+        <import resource="mvc-view-config.xml" />
+
+        <!-- message处理见Spring例子 -->
+        <bean id="messageSource"
+                class="org.springframework.context.support.ResourceBundleMessageSource"
+                p:basename="messages/messages" >
+                <property name="useCodeAsDefaultMessage" value="true" />
+                
+        </bean>        
+		
+        <!-- 异常处理见Spring例子 -->
+        <!-- Mapping exception to the handler view -->
+        <bean id="exceptionResolver"
+                class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+                <property name="exceptionMappings">
+                        <props>
+                        </props>
+                </property>
+        </bean>
+		<!-- TimeSheet异常处理逻辑--> 
+		<bean id="errorResolverHandler"
+                class="com.tclpay.tpf.handler.TpfExceptionHandler">
+        </bean>
+        <bean id="errorResolver"
+        		class="com.tclpay.tpf.handler.error.TpfErrorResolverImpl">
+        </bean>
+</beans>

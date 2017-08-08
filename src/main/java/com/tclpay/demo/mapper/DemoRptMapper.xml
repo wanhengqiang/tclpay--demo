@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tclpay.demo.mapper.DemoRptMapper" >
+  <resultMap id="BaseResultMap" type="com.tclpay.demo.pojo.DemoRptInfo" >
+    <result column="rpt_code" property="rptCode" jdbcType="VARCHAR" />
+    <result column="rpt_name" property="rptName" jdbcType="VARCHAR" />
+    <result column="rpt_desc" property="rptDesc" jdbcType="VARCHAR" />
+    <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
+    <result column="updated_by" property="updatedBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    rpt_code, rpt_name, rpt_desc, updated_date, updated_by
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from demo_rpt_info
+    where rpt_code = #{rptCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from demo_rpt_info
+    where rpt_code = #{rptCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tclpay.demo.pojo.DemoRptInfo" >
+    insert into demo_rpt_info (rpt_code, rpt_name, rpt_desc, updated_date, updated_by)
+    values (#{rptCode,jdbcType=VARCHAR}, #{rptName,jdbcType=VARCHAR}, #{rptDesc,jdbcType=VARCHAR}, 
+       #{updatedDate,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.tclpay.demo.pojo.DemoRptInfo" >
+    update demo_rpt_info
+    set rpt_name = #{rptName,jdbcType=VARCHAR},
+      rpt_desc = #{rptDesc,jdbcType=VARCHAR},
+      updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=VARCHAR}
+    where rpt_code = #{rptCode,jdbcType=VARCHAR}
+  </update>
+   <select id="findDemoRptInfo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from demo_rpt_info
+	    <if test="rptName != null and rptName !=''">
+	    where rpt_name like CONCAT(#{rptName,jdbcType=VARCHAR},'%')
+	    </if>
+  </select>
+</mapper>
